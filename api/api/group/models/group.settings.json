@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "group_s",
+  "info": {
+    "name": "Group Stages",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "GroupName": {
+      "type": "string"
+    },
+    "GroupType": {
+      "type": "enumeration",
+      "enum": [
+        "GroupStage",
+        "Knockout"
+      ]
+    },
+    "games": {
+      "via": "GroupStage",
+      "collection": "game"
+    }
+  }
+}

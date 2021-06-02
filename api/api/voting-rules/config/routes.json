@@ -1,0 +1,52 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/voting-rules",
+      "handler": "voting-rules.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/voting-rules/count",
+      "handler": "voting-rules.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/voting-rules/:id",
+      "handler": "voting-rules.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/voting-rules",
+      "handler": "voting-rules.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/voting-rules/:id",
+      "handler": "voting-rules.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/voting-rules/:id",
+      "handler": "voting-rules.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

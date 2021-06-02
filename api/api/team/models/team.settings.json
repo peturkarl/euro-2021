@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "teams",
+  "info": {
+    "name": "Team",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "TeamName": {
+      "type": "string"
+    },
+    "TeamFlag": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false,
+      "pluginOptions": {}
+    },
+    "HomeGames": {
+      "via": "HomeTeam",
+      "collection": "game"
+    },
+    "AwayGames": {
+      "via": "AwayTeam",
+      "collection": "game"
+    }
+  }
+}

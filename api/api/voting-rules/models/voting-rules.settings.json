@@ -1,0 +1,23 @@
+{
+  "kind": "collectionType",
+  "collectionName": "voting_rules",
+  "info": {
+    "name": "VotingRules",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "VotingEndMinutesBeforeGame": {
+      "type": "integer",
+      "default": 90
+    },
+    "Company": {
+      "model": "company"
+    }
+  }
+}
