@@ -8,12 +8,17 @@
           </v-toolbar-title>
         </v-toolbar>
         <v-card>
-          <v-form ref="form" lazy-validation>
+          <v-form ref="form" lazy-validation @keyup.native.enter="login">
             <v-container>
               <v-layout column>
-                <v-text-field label="Email" required></v-text-field>
+                <v-text-field
+                  v-model="user"
+                  label="Email"
+                  required
+                ></v-text-field>
 
                 <v-text-field
+                  v-model="pass"
                   label="Password"
                   type="password"
                   required
@@ -24,7 +29,7 @@
           <v-card-actions>
             <v-flex>
               <v-btn href="/vuetify/register">Register</v-btn>
-              <v-btn color="primary" @click="login">Sign In</v-btn>
+              <v-btn color="primary" @submit="login">Sign In</v-btn>
             </v-flex>
           </v-card-actions>
         </v-card>

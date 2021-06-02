@@ -37,25 +37,17 @@
       </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
+
+      <div v-if="user">
+        <v-icon>mdi-account</v-icon>
+        <v-btn @click="logout">{{ user.username }}</v-btn>
+      </div>
     </v-app-bar>
     <v-main>
       <v-container>
         <nuxt />
       </v-container>
     </v-main>
-    <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light> mdi-repeat </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
     <v-footer :absolute="!fixed" app>
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
@@ -87,6 +79,17 @@ export default {
       rightDrawer: false,
       title: 'Vuetify.js',
     }
+  },
+  computed: {
+    user() {
+      return this.$strapi.user
+    },
+  },
+  methods: {
+    logout() {
+      this.$strapi.logout()
+      this.$router.push('/login')
+    },
   },
 }
 </script>
