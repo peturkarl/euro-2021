@@ -41,16 +41,20 @@ services:
     ports:
       - "27017:27017"
 
-  # frontend:
-  #   image: node:14
-  #   command: npm run dev
-  #   volumes:
-  #     - ./frontend:/usr/src/app
-  #   working_dir: /usr/src/app
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     HOST: 0.0.0.0
+  frontend:
+    image: node:14
+    build: 
+      context: ./frontend
+    command: npm run dev
+    volumes:
+      - ./frontend:/usr/src/app
+    working_dir: /usr/src/app
+    ports:
+      - "3000:3000"
+    networks:
+      - strapi-app-network
+    environment:
+      HOST: 0.0.0.0
 
 networks:
   strapi-app-network:

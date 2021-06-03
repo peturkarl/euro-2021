@@ -11,7 +11,7 @@ RUN yarn install
 
 COPY api/ ./
 
-ENV NODE_ENV production
+# ENV NODE_ENV production
 
 EXPOSE 1337
 
