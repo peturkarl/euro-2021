@@ -1,0 +1,60 @@
+version: "3"
+
+services:
+  euro2021_web_strapi:
+    # image: strapi/strapi
+    image: nodejs
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
+    container_name: euro2021_web_strapi
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_CLIENT: ${DATABASE_CLIENT}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+    #    links:
+    #      - mongo:mongo
+    networks:
+      - strapi-app-network
+    volumes:
+      - ./api:/srv/app
+    ports:
+      - "1337:1337"
+
+  euro2021_db:
+    image: mongo
+    container_name: euro2021_db
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    networks:
+      - strapi-app-network
+    volumes:
+      - euro2021_data:/data/db
+    ports:
+      - "27017:27017"
+
+  # frontend:
+  #   image: node:14
+  #   command: npm run dev
+  #   volumes:
+  #     - ./frontend:/usr/src/app
+  #   working_dir: /usr/src/app
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     HOST: 0.0.0.0
+
+networks:
+  strapi-app-network:
+    driver: bridge
+
+volumes:
+  euro2021_data:
