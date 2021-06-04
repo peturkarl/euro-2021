@@ -41,7 +41,9 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
-  strapi: {},
+  strapi: {
+    url: 'https://em.hviturhattur.is'
+  },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {

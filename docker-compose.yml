@@ -24,7 +24,7 @@ services:
     volumes:
       - ./api:/srv/app
     ports:
-      - "1337:1337"
+      - "3069:3069"
 
   euro2021_db:
     image: mongo

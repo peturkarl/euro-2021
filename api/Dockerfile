@@ -11,8 +11,9 @@ RUN yarn install
 
 COPY api/ ./
 
-# ENV NODE_ENV production
+ENV NODE_ENV production
 
-EXPOSE 1337
+EXPOSE 3069
 
+# CMD ["yarn", "buildStart"]
 CMD ["yarn", "develop"]

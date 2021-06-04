@@ -2,13 +2,17 @@
   <v-container>
     <v-card v-for="(obj, date) in gamesByDate" :key="date">
       <v-card-title class="d-flex justify-center" inset>{{
-        date
+        date | dateFormat('DD. MMM YYYY')
       }}</v-card-title>
       <v-list two-line>
         <v-list-item-group>
           <template v-for="(game, index) in gamesByDate[date]">
             <v-list-item :key="game.id" class="d-flex justify-center" ripple>
-              <v-list-item-avatar tile size="20">
+              <v-list-item-avatar
+                v-if="game.HomeTeam.TeamFlag.url"
+                tile
+                size="20"
+              >
                 <v-img :src="game.HomeTeam.TeamFlag.url | img"></v-img>
               </v-list-item-avatar>
               {{ game.HomeTeam.TeamName }}
@@ -27,7 +31,11 @@
                 >Vista</v-btn
               >
               {{ game.AwayTeam.TeamName }}
-              <v-list-item-avatar tile size="20">
+              <v-list-item-avatar
+                v-if="game.HomeTeam.TeamFlag.url"
+                tile
+                size="20"
+              >
                 <v-img :src="game.AwayTeam.TeamFlag.url | img"></v-img>
               </v-list-item-avatar>
             </v-list-item>
@@ -36,16 +44,29 @@
               :key="game.id + '-show'"
               disabled
             >
-              <v-list-item-action-text class="d-flex justify-center">
+              <v-list-item-action-text class="d-flex justify-center mt-5">
                 <v-text-field
                   v-model="game.HomeTeamScore"
+                  class="ml-3"
                   dense
                   outlined
                   :label="game.HomeTeam.TeamName"
                 ></v-text-field>
-                Sigurvegari
+                <v-list-item-subtitle
+                  class="d-flex justify-center"
+                  v-text="
+                    'Sigurvegari: ' +
+                    getWinner(
+                      game.HomeTeamScore,
+                      game.AwayTeamScore,
+                      game.HomeTeam.TeamName,
+                      game.AwayTeam.TeamName
+                    )
+                  "
+                ></v-list-item-subtitle>
                 <v-text-field
                   v-model="game.AwayTeamScore"
+                  class="mr-3"
                   dense
                   outlined
                   :label="game.AwayTeam.TeamName"
@@ -65,7 +86,12 @@ const moment = require('moment')
 export default {
   filters: {
     img(v) {
-      return 'http://localhost:1337' + v
+      return 'https://em.hviturhattur.is' + v
+    },
+    dateFormat(v, fmt) {
+      if (v) {
+        return moment(v, 'DD-MM-YYYY').locale('is').format(fmt)
+      }
     },
   },
   data() {
@@ -87,6 +113,17 @@ export default {
     },
   },
   methods: {
+    getWinner(hts, ats, homeTeamName, awayTeamName) {
+      const h = parseInt(hts)
+      const a = parseInt(ats)
+      if (h > a) {
+        return `1 - ${homeTeamName}`
+      } else if (h < a) {
+        return `2 - ${awayTeamName}`
+      } else {
+        return 'Jafntefli'
+      }
+    },
     vote(hts, ats) {
       this.selectedGame = -1
       console.log(hts, ats)
