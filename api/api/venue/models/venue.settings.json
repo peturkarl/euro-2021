@@ -47,6 +47,9 @@
     },
     "City": {
       "type": "string"
+    },
+    "City2": {
+      "type": "string"
     }
   }
 }
