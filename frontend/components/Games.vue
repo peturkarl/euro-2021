@@ -1,46 +1,72 @@
 <template>
   <v-container>
-    <v-card v-for="(obj, date) in gamesByDate" :key="date">
-      <v-card-title class="d-flex justify-center" inset>{{
-        date | dateFormat('DD. MMM YYYY')
-      }}</v-card-title>
+    <v-snackbar v-model="snackbar.show" multi-line :timeout="snackbar.timeout">
+      {{ snackbar.msg }}
+      <template #action="{ attrs }">
+        <v-btn color="blue" text v-bind="attrs" @click="snackbar.show = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+    <v-card v-for="(obj, date) in gamesByDate" :key="date" class="mx-auto">
+      <v-card-title inset>{{ date | dateFormat('DD. MMM YYYY') }}</v-card-title>
       <v-list two-line>
         <v-list-item-group>
-          <template v-for="(game, index) in gamesByDate[date]">
-            <v-list-item :key="game.id" class="d-flex justify-center" ripple>
-              <v-list-item-avatar
-                v-if="game.HomeTeam.TeamFlag.url"
-                tile
-                size="20"
-              >
-                <v-img :src="game.HomeTeam.TeamFlag.url | img"></v-img>
-              </v-list-item-avatar>
-              {{ game.HomeTeam.TeamName }}
-              <v-btn
-                v-if="selectedGame !== index"
-                class="ml-3 mr-3"
-                small
-                @click="setSelectedGame(index)"
-                >Smelltu til að kjósa</v-btn
-              >
-              <v-btn
-                v-if="selectedGame === index"
-                class="ml-3 mr-3"
-                small
-                @click="vote(game.HomeTeamScore, game.AwayTeamScore)"
-                >Vista</v-btn
-              >
-              {{ game.AwayTeam.TeamName }}
-              <v-list-item-avatar
-                v-if="game.HomeTeam.TeamFlag.url"
-                tile
-                size="20"
-              >
-                <v-img :src="game.AwayTeam.TeamFlag.url | img"></v-img>
-              </v-list-item-avatar>
+          <template v-for="game in gamesByDate[date]">
+            <v-list-item :key="game.id" ripple>
+              <v-list-item-content class="ml-5">
+                <v-list-item-title>
+                  <v-list-item-avatar
+                    v-if="game.HomeTeam.TeamFlag.url"
+                    tile
+                    size="20"
+                  >
+                    <v-img :src="game.HomeTeam.TeamFlag.url | img"></v-img>
+                  </v-list-item-avatar>
+                  {{ game.HomeTeam.TeamName }}
+                  <v-chip outlined pill class="ml-3">{{
+                    game.DateOfGame | timeFormat('HH:mm')
+                  }}</v-chip>
+                  <span class="ml-3">
+                    {{ game.AwayTeam.TeamName }}
+                  </span>
+                  <v-list-item-avatar
+                    v-if="game.HomeTeam.TeamFlag.url"
+                    tile
+                    class="ml-3"
+                    size="20"
+                  >
+                    <v-img :src="game.AwayTeam.TeamFlag.url | img"></v-img>
+                  </v-list-item-avatar>
+                </v-list-item-title>
+              </v-list-item-content>
+              <v-list-item-action align-end>
+                <v-btn
+                  v-if="selectedGame !== game.id"
+                  class="ml-3 mr-3"
+                  small
+                  @click="setSelectedGame(game.id)"
+                  >Kjósa</v-btn
+                >
+                <v-btn
+                  v-if="selectedGame === game.id"
+                  class="ml-3 mr-3"
+                  small
+                  @click="
+                    vote(
+                      game.HomeTeamScore,
+                      game.AwayTeamScore,
+                      game.id,
+                      game.HomeTeam.TeamName,
+                      game.AwayTeam.TeamName
+                    )
+                  "
+                  >Vista</v-btn
+                >
+              </v-list-item-action>
             </v-list-item>
             <v-hover
-              v-if="selectedGame === index"
+              v-if="selectedGame === game.id"
               :key="game.id + '-show'"
               disabled
             >
@@ -93,16 +119,42 @@ export default {
         return moment(v, 'DD-MM-YYYY').locale('is').format(fmt)
       }
     },
+    timeFormat(v, fmt) {
+      if (v) {
+        return moment(v, 'YYYY-MM-DD[T]HH:mm:sss.sss[Z]')
+          .locale('is')
+          .format(fmt)
+      }
+    },
   },
   data() {
     return {
-      no: false,
+      snackbar: {
+        timeout: 5000,
+        msg: '',
+        show: false,
+      },
       games: [],
+      myPredictions: [],
       selectedGame: -1,
     }
   },
   async fetch() {
-    this.games = await this.$strapi.find('games')
+    const games = await this.$strapi.find('games')
+    const myPredictions = await this.$strapi.find('user-predictions', {
+      User: this.user.id,
+    })
+    for (const game of games) {
+      const prediction = myPredictions.find(({ User }) => User === this.user.id)
+      if (prediction) {
+        game.myPrediction = prediction
+        console.log(`Prediction for ${game.id} - ${prediction}`)
+      } else {
+        console.log(`No Prediction for ${game.id}`)
+      }
+    }
+
+    this.games = games
   },
   computed: {
     gamesByDate() {
@@ -111,8 +163,15 @@ export default {
       })
       return g
     },
+    user() {
+      return this.$strapi.user
+    },
   },
   methods: {
+    showMsg(msg) {
+      this.snackbar.msg = msg
+      this.snackbar.show = true
+    },
     getWinner(hts, ats, homeTeamName, awayTeamName) {
       const h = parseInt(hts)
       const a = parseInt(ats)
@@ -124,9 +183,19 @@ export default {
         return 'Jafntefli'
       }
     },
-    vote(hts, ats) {
+    async vote(hts, ats, gameId, homeTeamName, awayTeamName) {
       this.selectedGame = -1
-      console.log(hts, ats)
+      const res = await this.$strapi.create('user-predictions', {
+        HomeTeamScore: hts,
+        AwayTeamScore: ats,
+        Game: gameId,
+        User: this.user.id,
+      })
+      if (res) {
+        this.showMsg(
+          `Takk fyrir kosninguna ( ${homeTeamName} ${hts} - ${ats} ${awayTeamName})`
+        )
+      }
     },
     setSelectedGame(index) {
       if (index === this.selectedGame) {

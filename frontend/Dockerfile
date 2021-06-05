@@ -9,7 +9,10 @@ WORKDIR /usr/src/app/
 
 ONBUILD RUN npm install
 
-ENV HOST 0.0.0.0
+
+ENV NODE_ENV production
+ENV HOST 127.0.0.1
+
 # Install app dependencies
-# CMD [ "npm", "run", "buildStart"]
-CMD [ "npm", "run", "dev"]
+CMD [ "npm", "run", "buildStart"]
+# CMD [ "npm", "run", "dev"]
