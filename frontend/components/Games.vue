@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-card v-for="(obj, date) in gamesByDate" :key="date">
       <v-card-title class="d-flex justify-center" inset>{{
         date | dateFormat('DD. MMM YYYY')
@@ -15,16 +15,16 @@
               >
                 <v-img :src="game.HomeTeam.TeamFlag.url | img"></v-img>
               </v-list-item-avatar>
-              {{ game.HomeTeam.TeamName }}
+              {{ game.HomeTeam.TeamName }} {{ game.id }} {{ index }}
               <v-btn
-                v-if="selectedGame !== index"
+                v-if="selectedGame !== game.id"
                 class="ml-3 mr-3"
                 small
-                @click="setSelectedGame(index)"
+                @click="setSelectedGame(game.id)"
                 >Smelltu til að kjósa</v-btn
               >
               <v-btn
-                v-if="selectedGame === index"
+                v-if="selectedGame === game.id"
                 class="ml-3 mr-3"
                 small
                 @click="vote(game.HomeTeamScore, game.AwayTeamScore)"
@@ -129,6 +129,7 @@ export default {
       console.log(hts, ats)
     },
     setSelectedGame(index) {
+      console.log(index)
       if (index === this.selectedGame) {
         this.selectedGame = -1
       } else {
