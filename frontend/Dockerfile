@@ -1,19 +1,15 @@
 FROM node:latest
 
 # Install node modules
-RUN npm install -g nodemon
+# RUN npm install -g nodemon
 RUN npm install -g nuxt
 
 # Create app directory
 RUN mkdir -p /usr/src/app/
 WORKDIR /usr/src/app/
 
-ONBUILD RUN npm install
-
+RUN npm install
+RUN npm run build
 
 ENV NODE_ENV production
 ENV HOST 0.0.0.0
-
-# Install app dependencies
-CMD [ "npm", "run", "buildStart"]
-# CMD [ "npm", "run", "dev"]

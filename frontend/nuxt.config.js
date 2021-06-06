@@ -2,8 +2,8 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - euro2021-frontend',
-    title: 'euro2021-frontend',
+    titleTemplate: '%s - EURO2021',
+    title: 'EURO2021',
     htmlAttrs: {
       lang: 'en',
     },
@@ -42,7 +42,7 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
   strapi: {
-    url: 'https://em.hviturhattur.is',
+    url: process.env.API_URL,
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
