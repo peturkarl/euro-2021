@@ -336,11 +336,17 @@ export default {
         )
       }
       console.log('TOO LATE?: ' + tooLate)
-
+      let companyId = ''
+      if (typeof this.user.company.id !== 'undefined') {
+        companyId = this.user.company.id
+      }
+      if (this.user.company > 0) {
+        companyId = this.user.company
+      }
       const hasVotedBefore = await this.$strapi.find('user-predictions', {
         Game: gameId,
         User: this.user.id,
-        Company: this.user.company,
+        Company: companyId,
       })
       if (hasVotedBefore.length <= 0) {
         try {
@@ -349,7 +355,7 @@ export default {
             AwayTeamScore: ats,
             Game: gameId,
             User: this.user.id,
-            Company: this.user.company,
+            Company: companyId,
           })
           if (createdVoted) {
             game.myPrediction = createdVoted
