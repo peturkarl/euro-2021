@@ -49,6 +49,9 @@ export default {
   vuetify: {
     optionsPath: './vuetify.options.js',
   },
+  publicRuntimeConfig: {
+    API_URL: process.env.API_URL,
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},

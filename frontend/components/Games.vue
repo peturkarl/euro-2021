@@ -30,7 +30,9 @@
                         tile
                         size="20"
                       >
-                        <v-img :src="game.HomeTeam.TeamFlag.url | img"></v-img>
+                        <v-img
+                          :src="API_URL + game.HomeTeam.TeamFlag.url"
+                        ></v-img>
                       </v-list-item-avatar>
                       {{ game.HomeTeam.TeamName }}
                     </v-col>
@@ -168,14 +170,15 @@ const _ = require('lodash')
 const moment = require('moment')
 export default {
   filters: {
-    img(v) {
-      return 'https://em.hviturhattur.is' + v
-    },
+    img(v) {},
     dateFormat(v, fmt) {
       if (v) {
         return moment(v, 'DD-MM-YYYY').locale('is').format(fmt)
       }
     },
+  },
+  asyncData({ $config: { API_URL } }) {
+    return { API_URL }
   },
   data() {
     return {
