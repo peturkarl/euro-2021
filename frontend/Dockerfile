@@ -1,15 +1,12 @@
-FROM node:latest
+FROM node:14.11-buster-slim
 
-# Install node modules
-# RUN npm install -g nodemon
-# RUN npm install -g nuxt
+RUN apt-get update
 
-# Create app directory
-RUN mkdir -p /usr/src/app/
-WORKDIR /usr/src/app/
+ENV APP_ROOT /src
 
-RUN yarn install
-RUN yarn build
+WORKDIR ${APP_ROOT}
+COPY . ${APP_ROOT}
 
-ENV NODE_ENV development
+RUN npm run build
+
 ENV HOST 0.0.0.0
