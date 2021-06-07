@@ -1,7 +1,7 @@
 <template>
   <v-container fill-height>
     <v-row align="center" justify="center">
-      <v-col cols="8">
+      <v-col xl="6" lg="6" md="6" sm="12" xs="12">
         <v-toolbar color="pink">
           <v-toolbar-title class="white--text">
             UEFA Euro 2021 - National Teams

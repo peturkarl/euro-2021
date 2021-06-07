@@ -1,7 +1,7 @@
 <template>
   <v-container fill-height>
     <v-row align="center" justify="center">
-      <v-col cols="8">
+      <v-col xl="6" lg="6" md="6" sm="12" xs="12">
         <v-toolbar color="blue">
           <v-toolbar-title v-if="companyName" class="white--text">
             EM 2021 keppnin hjá <strong>{{ companyName }}</strong>
@@ -19,13 +19,13 @@
                 <v-text-field
                   v-model="fullName"
                   label="Nafnið þitt"
-                  :rules="[rules.required]"
+                  :rules="nameRules"
                   hint="Þú mátt kalla þig hvað sem er"
                   required
                 ></v-text-field>
                 <v-text-field
                   v-model="email"
-                  :rules="[rules.required]"
+                  :rules="emailRules"
                   label="Netfang"
                   required
                 ></v-text-field>
@@ -33,7 +33,7 @@
                 <v-text-field
                   v-model="password"
                   label="Lykilorð"
-                  :rules="[rules.required, rules.min]"
+                  :rules="passwordRules"
                   hint="Að minnsta kosti 8 stafir og einn hástafur"
                   counter
                   type="password"
@@ -42,7 +42,7 @@
                 <v-text-field
                   v-model="confirmPassword"
                   label="Staðfestu lykilorð"
-                  :rules="[rules.required, rules.passwordMatch]"
+                  :rules="passwordRules"
                   counter
                   type="password"
                   required
@@ -74,7 +74,7 @@
                   :disabled="loading || !formIsValid"
                   color="primary"
                   type="submit"
-                  :click="validateAndRegister"
+                  @click="validateAndRegister"
                 >
                   Nýskrá
                   <template #loader>
@@ -107,11 +107,6 @@ export default {
       ableToSend: true,
       company: '',
       companyName: '',
-      rules: {
-        required: (value) => !!value || 'Nauðsynlegt.',
-        min: (v) => v.length >= 8 || 'Amk. 8 stafir',
-        passwordMatch: (v) => v !== this.password || 'Lykilorð passa ekki',
-      },
     }
   },
   async fetch() {
@@ -131,7 +126,6 @@ export default {
       const companies = await this.$strapi.find('companies', {
         RegistrationCode: token,
       })
-      console.log(companies)
       if (companies.length > 0) {
         this.company = companies[0].id
         this.companyName = companies[0].CompanyName
@@ -149,6 +143,42 @@ export default {
     }
   },
   computed: {
+    nameRules() {
+      const rules = []
+      if (this.fullName) {
+        const rule = (v) =>
+          (v || '').length > 3 ||
+          `Þessi reitur er nauðsynlegur (4 stafir lágmark)`
+        rules.push(rule)
+      }
+
+      return rules
+    },
+    emailRules() {
+      const rules = []
+      if (this.email) {
+        const rule = (v) =>
+          (v || '').includes('@') || `Þú verður að vera með gilt netfang`
+        rules.push(rule)
+      }
+      return rules
+    },
+    passwordRules() {
+      const rules = []
+      if (this.password) {
+        const rule = (v) => (v || '').length > 6 || `Lágmark 6 stafa lykilorð`
+        rules.push(rule)
+      }
+      return rules
+    },
+    confirmPasswordRules() {
+      const rules = []
+      if (this.password !== this.confirmPassword) {
+        rules.push('Lykilorð stemma ekki')
+      }
+      return rules
+    },
+
     formIsValid() {
       return (
         this.fullName !== '' &&
@@ -158,7 +188,17 @@ export default {
       )
     },
   },
+  watch: {
+    fullName: 'validateField',
+    email: 'validateField',
+    password: 'validateField',
+    confirmPassword: 'validateField',
+  },
+
   methods: {
+    validateField() {
+      this.$refs.form.validate()
+    },
     async validateAndRegister() {
       await console.log(this.fullName, this.email, this.password)
 
