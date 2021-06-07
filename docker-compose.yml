@@ -2,7 +2,6 @@ version: "3"
 
 services:
   euro2021_web:
-    # image: strapi/strapi
     image: nodejs
     build:
       context: .
@@ -23,8 +22,6 @@ services:
       AWS_REGION: ${AWS_REGION}
       EMAIL_DEFAULT_FROM: ${EMAIL_DEFAULT_FROM}
       EMAIL_DEFAULT_REPLY_TO: ${EMAIL_DEFAULT_REPLY_TO}
-    #    links:
-    #      - mongo:mongo
     networks:
       - strapi-app-network
     volumes:
@@ -48,22 +45,20 @@ services:
     ports:
       - "5439:5439"
 
-  # frontend:
-  #   image: node:14
-  #   build: 
-  #     context: .
-  #     dockerfile: ./frontend/Dockerfile
-  #   command:
-  #     "npm run start"
-  #   volumes:
-  #     - ./frontend:/usr/src/app
-  #   working_dir: /usr/src/app
-  #   ports:
-  #     - "3068:3068"
-  #   networks:
-  #     - strapi-app-network
-  #   environment:
-  #     HOST: 0.0.0.0
+  frontend:
+    image: node:14
+    build: ./frontend/
+    command:
+      "npm run start"
+    volumes:
+      - ./frontend:/usr/src/app
+    working_dir: /usr/src/app
+    ports:
+      - "3068:3068"
+    networks:
+      - strapi-app-network
+    environment:
+      HOST: 0.0.0.0
 
 networks:
   strapi-app-network:
