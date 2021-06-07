@@ -1,13 +1,12 @@
 version: "3"
 
 services:
-  euro2021_web_strapi:
-    # image: strapi/strapi
+  euro2021_web:
     image: nodejs
     build:
       context: .
       dockerfile: ./api/Dockerfile
-    container_name: euro2021_web_strapi
+    container_name: euro2021_web
     restart: unless-stopped
     env_file: .env
     environment:
@@ -17,40 +16,45 @@ services:
       DATABASE_PORT: ${DATABASE_PORT}
       DATABASE_USERNAME: ${DATABASE_USERNAME}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-    #    links:
-    #      - mongo:mongo
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      AWS_ACCES_KEY_ID: ${AWS_ACCES_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+      EMAIL_DEFAULT_FROM: ${EMAIL_DEFAULT_FROM}
+      EMAIL_DEFAULT_REPLY_TO: ${EMAIL_DEFAULT_REPLY_TO}
     networks:
       - strapi-app-network
     volumes:
       - ./api:/srv/app
     ports:
-      - "3069:3069"
+      - "3070:3070"
 
-  euro2021_db:
-    image: mongo
-    container_name: euro2021_db
+  euro2021_pg_db:
+    image: postgres
+    container_name: euro2021_pg_db
     restart: unless-stopped
     env_file: .env
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
     networks:
       - strapi-app-network
     volumes:
-      - euro2021_data:/data/db
+      - euro2021_pg_data:/data/postgres
     ports:
-      - "27017:27017"
+      - "5439:5439"
 
   frontend:
     image: node:14
-    build: 
-      context: ./frontend
-    command: npm run dev
+    build: ./frontend/
+    command:
+      "npm run start"
     volumes:
       - ./frontend:/usr/src/app
     working_dir: /usr/src/app
     ports:
-      - "3000:3000"
+      - "3068:3068"
     networks:
       - strapi-app-network
     environment:
@@ -61,4 +65,4 @@ networks:
     driver: bridge
 
 volumes:
-  euro2021_data:
+  euro2021_pg_data:

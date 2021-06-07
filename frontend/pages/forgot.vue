@@ -18,13 +18,13 @@
               <v-layout column>
                 <v-text-field
                   v-model="user"
-                  label="Netfang"
+                  label="Email"
                   required
                 ></v-text-field>
 
                 <v-text-field
                   v-model="pass"
-                  label="Lykilorð"
+                  label="Password"
                   type="password"
                   required
                 ></v-text-field>
@@ -47,21 +47,8 @@
             <v-row>
               <v-col>
                 <v-flex>
-                  <v-btn
-                    class="ma-2"
-                    :loading="loading"
-                    :disabled="loading"
-                    color="primary"
-                    @click="login"
-                  >
-                    Skrá inn
-                    <template #loader>
-                      <span class="custom-loader">
-                        <v-icon light>mdi-cached</v-icon>
-                      </span>
-                    </template>
-                  </v-btn>
-                  <v-btn @click="forgot">Gleymt lykilorð</v-btn>
+                  <v-btn href="/register">Register</v-btn>
+                  <v-btn color="primary" @click="login">Sign In</v-btn>
                 </v-flex>
               </v-col>
             </v-row>
@@ -90,7 +77,6 @@ export default {
       user: '',
       pass: '',
       errorMessages: [],
-      loading: false,
     }
   },
   mounted() {
@@ -102,16 +88,7 @@ export default {
     }
   },
   methods: {
-    async forgot() {
-      const res = await this.$strapi
-        .forgotPassword({ email: this.user })
-        .catch((e) => {
-          console.log(e)
-        })
-      console.log(res.response)
-    },
     async login() {
-      this.loading = true
       this.errorMessages = []
       try {
         if (lsTest() === true) {
@@ -121,11 +98,9 @@ export default {
           .login({ identifier: this.user, password: this.pass })
           .catch((e) => {
             this.errorMessages = e.response.data.message
-            this.loading = false
             return console.error(`Error authenticating: ${e.response}`)
           })
           .then((res) => {
-            this.loading = false
             if (this.errorMessages.length <= 0) {
               if (res.user.id) {
                 this.$router.push('/')
@@ -133,7 +108,6 @@ export default {
             }
           })
       } catch (e) {
-        this.loading = false
         console.error(e)
       }
     },

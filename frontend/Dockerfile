@@ -1,15 +1,12 @@
-FROM node:latest
+FROM node:14.11-buster-slim
 
-# Install node modules
-RUN npm install -g nodemon
+RUN apt-get update
 
-# Create app directory
-RUN mkdir -p /usr/src/app/
-WORKDIR /usr/src/app/
+ENV APP_ROOT /src
 
-ONBUILD RUN npm install
+WORKDIR ${APP_ROOT}
+COPY . ${APP_ROOT}
+
+RUN npm run build
 
 ENV HOST 0.0.0.0
-# Install app dependencies
-# CMD [ "npm", "run", "buildStart"]
-CMD [ "npm", "run", "dev"]
