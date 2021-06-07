@@ -12,9 +12,9 @@ RUN yarn install
 COPY api/ ./
 
 # ENV NODE_ENV development
-ENV PORT 3069
+ENV PORT 3070
 ENV HOST 0.0.0.0
-EXPOSE 3069
+EXPOSE 3070
 
 # CMD ["yarn", "buildStart"]
 CMD ["yarn", "develop"]

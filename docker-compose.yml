@@ -1,13 +1,13 @@
 version: "3"
 
 services:
-  euro2021_web_strapi:
+  euro2021_web:
     # image: strapi/strapi
     image: nodejs
     build:
       context: .
       dockerfile: ./api/Dockerfile
-    container_name: euro2021_web_strapi
+    container_name: euro2021_web
     restart: unless-stopped
     env_file: .env
     environment:
@@ -30,11 +30,11 @@ services:
     volumes:
       - ./api:/srv/app
     ports:
-      - "3069:3069"
+      - "3070:3070"
 
-  euro2021_db:
+  euro2021_pg_db:
     image: postgres
-    container_name: euro2021_db
+    container_name: euro2021_pg_db
     restart: unless-stopped
     env_file: .env
     environment:
@@ -70,4 +70,4 @@ networks:
     driver: bridge
 
 volumes:
-  euro2021_data:
+  euro2021_pg_data:
