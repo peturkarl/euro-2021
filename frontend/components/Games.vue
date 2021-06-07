@@ -92,15 +92,21 @@
                     )
                   "
                   >Þitt gisk: {{ game.myPrediction.HomeTeamScore }} -
-                  {{ game.myPrediction.AwayTeamScore }} ({{
-                    getPoints(
-                      game.HomeTeamScore,
-                      game.AwayTeamScore,
-                      game.myPrediction.HomeTeamScore,
-                      game.myPrediction.AwayTeamScore
-                    )
-                  }}
-                  pts)</v-chip
+                  {{ game.myPrediction.AwayTeamScore }}
+                  <span
+                    v-if="
+                      gameIsFinished(game.HomeTeamScore, game.AwayTeamScore)
+                    "
+                    >({{
+                      getPoints(
+                        game.HomeTeamScore,
+                        game.AwayTeamScore,
+                        game.myPrediction.HomeTeamScore,
+                        game.myPrediction.AwayTeamScore
+                      )
+                    }}
+                    pts)</span
+                  ></v-chip
                 >
                 <v-btn
                   v-if="selectedGame === game.id"
@@ -243,6 +249,9 @@ export default {
     },
   },
   methods: {
+    gameIsFinished(hts, ats) {
+      return hts !== null && ats !== null
+    },
     getPointsColor(hts, ats, mhts, mats) {
       const pts = this.getPoints(hts, ats, mhts, mats)
       if (pts === '') {
