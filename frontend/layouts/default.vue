@@ -33,7 +33,7 @@
         <v-menu bottom offset-y>
           <template #activator="{ on, attrs }">
             <v-btn dark v-bind="attrs" v-on="on">
-              {{ user.username }}
+              {{ user.fullName }}
               <v-icon>mdi-dots-vertical</v-icon>
             </v-btn>
           </template>

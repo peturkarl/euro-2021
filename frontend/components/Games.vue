@@ -20,7 +20,11 @@
       <v-list>
         <v-list-item-group>
           <template v-for="game in gamesByDate[date]">
-            <v-list-item :key="game.id" @click="setSelectedGame(game.id)">
+            <v-list-item
+              :key="game.id"
+              :disabled="isTooLateToVote(game.DateOfGame)"
+              @click="setSelectedGame(game.id)"
+            >
               <v-list-item-content class="ml-5">
                 <v-list-item-title>
                   <v-row>
@@ -31,7 +35,7 @@
                         size="20"
                       >
                         <v-img
-                          :src="API_URL + game.HomeTeam.TeamFlag.url"
+                          :src="$config.API_URL + game.HomeTeam.TeamFlag.url"
                         ></v-img>
                       </v-list-item-avatar>
                       {{ game.HomeTeam.TeamName }}
@@ -55,7 +59,9 @@
                         class="ml-3"
                         size="20"
                       >
-                        <v-img :src="game.AwayTeam.TeamFlag.url | img"></v-img>
+                        <v-img
+                          :src="$config.API_URL + game.AwayTeam.TeamFlag.url"
+                        ></v-img>
                       </v-list-item-avatar>
                     </v-col>
                   </v-row>
@@ -73,7 +79,7 @@
                 <!-- TODO: Set color after game is finished and show points.  -->
                 <v-chip
                   v-if="
-                    selectedGame !== game.id &&
+                    selectedGameComp !== game.id &&
                     typeof game.myPrediction.id !== 'undefined'
                   "
                   dark
@@ -86,7 +92,15 @@
                     )
                   "
                   >Þitt gisk: {{ game.myPrediction.HomeTeamScore }} -
-                  {{ game.myPrediction.AwayTeamScore }}</v-chip
+                  {{ game.myPrediction.AwayTeamScore }} ({{
+                    getPoints(
+                      game.HomeTeamScore,
+                      game.AwayTeamScore,
+                      game.myPrediction.HomeTeamScore,
+                      game.myPrediction.AwayTeamScore
+                    )
+                  }}
+                  pts)</v-chip
                 >
                 <v-btn
                   v-if="selectedGame === game.id"
@@ -98,7 +112,8 @@
                       game.myPrediction.AwayTeamScore,
                       game.id,
                       game.HomeTeam.TeamName,
-                      game.AwayTeam.TeamName
+                      game.AwayTeam.TeamName,
+                      game
                     )
                   "
                   >Vista</v-btn
@@ -150,7 +165,8 @@
                           game.myPrediction.AwayTeamScore,
                           game.id,
                           game.HomeTeam.TeamName,
-                          game.AwayTeam.TeamName
+                          game.AwayTeam.TeamName,
+                          game
                         )
                       "
                     ></v-text-field>
@@ -176,9 +192,6 @@ export default {
         return moment(v, 'DD-MM-YYYY').locale('is').format(fmt)
       }
     },
-  },
-  asyncData({ $config: { API_URL } }) {
-    return { API_URL }
   },
   data() {
     return {
@@ -224,6 +237,9 @@ export default {
     },
     user() {
       return this.$strapi.user
+    },
+    selectedGameComp() {
+      return this.selectedGame
     },
   },
   methods: {
@@ -290,6 +306,11 @@ export default {
         return gameTime.format('HH:mm')
       }
     },
+    isTooLateToVote(dateOfGame) {
+      const gameTime = moment(dateOfGame, 'YYYY-MM-DD[T]HH:mm:sss.sss[Z]')
+      const now = moment().add(5, 'minutes')
+      return gameTime.isBefore(now)
+    },
     showMsg(msg, color) {
       this.snackbar.msg = msg
       this.snackbar.color = color
@@ -306,10 +327,20 @@ export default {
         return 'Jafntefli'
       }
     },
-    async vote(hts, ats, gameId, homeTeamName, awayTeamName) {
-      this.setSelectedGame(-1)
+    async vote(hts, ats, gameId, homeTeamName, awayTeamName, game) {
+      const tooLate = this.isTooLateToVote(game.DateOfGame)
+      if (tooLate) {
+        return this.showMsg(
+          `Því miður en kosningu lýkur 5 mínútum fyrir leik, við getum ekki tekið við atkvæði þínu.`,
+          'red'
+        )
+      }
+      console.log('TOO LATE?: ' + tooLate)
+
       const hasVotedBefore = await this.$strapi.find('user-predictions', {
         Game: gameId,
+        User: this.user.id,
+        Company: this.user.company,
       })
       if (hasVotedBefore.length <= 0) {
         try {
@@ -318,8 +349,10 @@ export default {
             AwayTeamScore: ats,
             Game: gameId,
             User: this.user.id,
+            Company: this.user.company,
           })
           if (createdVoted) {
+            game.myPrediction = createdVoted
             this.showMsg(
               `Takk fyrir kosninguna ( ${homeTeamName} ${hts} - ${ats} ${awayTeamName})`,
               'green'
@@ -346,6 +379,7 @@ export default {
               HomeTeamScore: hts,
               AwayTeamScore: ats,
               Game: gameId,
+              Company: this.company,
             }
           )
           if (updatedVote) {

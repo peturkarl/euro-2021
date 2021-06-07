@@ -28,9 +28,9 @@
       "pluginOptions": {}
     },
     "Users": {
+      "via": "company",
       "plugin": "users-permissions",
-      "collection": "user",
-      "via": "company"
+      "collection": "user"
     },
     "VotingRule": {
       "model": "voting-rules"

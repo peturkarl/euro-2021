@@ -29,8 +29,8 @@
           <tbody>
             <tr v-for="(member, index) in company.Users" :key="member.id">
               <td>{{ index + 1 }}</td>
-              <td>{{ member.username }}</td>
-              <td>{{ 41 }}</td>
+              <td>{{ member.fullName }}</td>
+              <td>{{ getPoints(member.id) }}</td>
             </tr>
           </tbody>
         </template>
@@ -40,7 +40,7 @@
 </template>
 
 <script>
-// const _ = require('lodash')
+const _ = require('lodash')
 const moment = require('moment')
 export default {
   filters: {
@@ -62,16 +62,25 @@ export default {
         color: '',
       },
       company: [],
+      statusTable: [],
     }
   },
   async fetch() {
     try {
-      if (this.user.company.id) {
-        const company = await this.$strapi.findOne(
-          'companies',
-          this.user.company.id
-        )
+      let companyId = ''
+      if (typeof this.user.company.id !== 'undefined') {
+        companyId = this.user.company.id
+      }
+      if (this.user.company > 0) {
+        companyId = this.user.company
+      }
+      if (companyId !== '') {
+        const company = await this.$strapi.findOne('companies', companyId)
         this.company = company
+        this.statusTable = await this.$strapi.$http.$get(
+          `/company-status-table/${company.id}`
+        )
+        console.log('STATUS: ' + this.statusTable)
       }
     } catch (e) {
       console.error(e)
@@ -83,6 +92,13 @@ export default {
     },
   },
   methods: {
+    getPoints(userId) {
+      if (this.statusTable[userId] !== undefined) {
+        const pts = this.statusTable[userId]
+        const totalPts = _.sumBy(pts, 'totalPoints')
+        return totalPts
+      }
+    },
     showMsg(msg, color) {
       this.snackbar.msg = msg
       this.snackbar.color = color

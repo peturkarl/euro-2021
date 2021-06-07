@@ -32,6 +32,9 @@
     "User": {
       "plugin": "users-permissions",
       "model": "user"
+    },
+    "Company": {
+      "model": "company"
     }
   }
 }

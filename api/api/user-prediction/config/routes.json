@@ -47,6 +47,14 @@
       "config": {
         "policies": []
       }
+    },
+    {
+      "method": "GET",
+      "path": "/company-status-table/:company",
+      "handler": "user-prediction.getStatusTable",
+      "config": {
+        "policies": []
+      }
     }
   ]
 }
