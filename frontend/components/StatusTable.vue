@@ -65,9 +65,17 @@ export default {
     }
   },
   async fetch() {
-    const company = await this.$strapi.findOne('companies', this.user.company)
-
-    this.company = company
+    try {
+      if (this.user.company.id) {
+        const company = await this.$strapi.findOne(
+          'companies',
+          this.user.company.id
+        )
+        this.company = company
+      }
+    } catch (e) {
+      console.error(e)
+    }
   },
   computed: {
     user() {

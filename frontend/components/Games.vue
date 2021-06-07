@@ -226,6 +226,9 @@ export default {
   methods: {
     getPointsColor(hts, ats, mhts, mats) {
       const pts = this.getPoints(hts, ats, mhts, mats)
+      if (pts === '') {
+        return ''
+      }
       if (pts < 1) {
         return 'red accent-4'
       }
@@ -242,6 +245,9 @@ export default {
     getPoints(hts, ats, mhts, mats) {
       let points = 0
       // One point for correct game results
+      if (hts === null || ats === null) {
+        return ''
+      }
       const actualResults = this.getWinner1x2(hts, ats)
       const myPredictedResults = this.getWinner1x2(mhts, mats)
       if (actualResults === myPredictedResults) {
@@ -329,7 +335,6 @@ export default {
           )
         }
       } else {
-        console.log('Has voted before', hasVotedBefore)
         try {
           const updatedVote = await this.$strapi.update(
             'user-predictions',
