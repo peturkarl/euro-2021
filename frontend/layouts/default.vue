@@ -26,7 +26,15 @@
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title v-text="title" />
+
+      <span v-if="getCompanyLogo !== ''"
+        ><img
+          class="mr-3"
+          :src="$config.API_URL + getCompanyLogo"
+          height="35"
+        />
+      </span>
+      <v-toolbar-title v-text="getTitle" />
       <v-spacer />
 
       <div v-if="user">
@@ -65,6 +73,12 @@ export default {
       clipped: false,
       drawer: false,
       fixed: false,
+      company: {
+        CompanyName: '',
+        Logo: {
+          url: '',
+        },
+      },
       items: [
         {
           icon: 'mdi-apps',
@@ -83,9 +97,37 @@ export default {
       title: 'EURO 2021',
     }
   },
+  async fetch() {
+    let companyId = ''
+    if (typeof this.user.company.id !== 'undefined') {
+      companyId = this.user.company.id
+    } else if (this.user.company > 0) {
+      companyId = this.user.company
+    }
+
+    if (companyId !== '') {
+      const company = await this.$strapi.findOne('companies', companyId)
+      if (company) {
+        this.company = company
+      }
+    }
+  },
   computed: {
     user() {
       return this.$strapi.user
+    },
+    getTitle() {
+      return `${this.company.CompanyName} ${this.title}`
+    },
+    getCompanyLogo() {
+      if (this.company.Logo === null) {
+        return ''
+      }
+      if (typeof this.company.Logo.url !== 'undefined') {
+        return this.company.Logo.url
+      } else {
+        return ''
+      }
     },
   },
   methods: {

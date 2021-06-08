@@ -61,7 +61,7 @@
                       </span>
                     </template>
                   </v-btn>
-                  <v-btn @click="forgot">Gleymt lykilorð</v-btn>
+                  <!-- <v-btn @click="forgot">Gleymt lykilorð</v-btn> -->
                 </v-flex>
               </v-col>
             </v-row>

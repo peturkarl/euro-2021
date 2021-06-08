@@ -80,7 +80,6 @@ export default {
         this.statusTable = await this.$strapi.$http.$get(
           `/company-status-table/${company.id}`
         )
-        console.log('STATUS: ' + this.statusTable)
       }
     } catch (e) {
       console.error(e)
