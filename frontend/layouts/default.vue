@@ -86,9 +86,19 @@ export default {
           to: '/',
         },
         {
-          icon: 'mdi-chart-bubble',
+          icon: 'mdi-table',
           title: 'Staðan',
           to: '/status',
+        },
+        // {
+        //   icon: 'mdi-soccer',
+        //   title: 'Riðlar',
+        //   to: '/groupstages',
+        // },
+        {
+          icon: 'mdi-message',
+          title: 'Skilaboð',
+          to: '/messages',
         },
       ],
       miniVariant: false,

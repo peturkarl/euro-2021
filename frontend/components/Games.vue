@@ -15,11 +15,16 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-card v-for="(obj, date) in gamesByDate" :key="date" class="mx-auto">
+    <v-card
+      v-for="(obj, date) in gamesByDate"
+      :key="date"
+      elevation="3"
+      class="mx-auto mt-4"
+    >
       <v-card-title inset>{{ date | dateFormat('DD. MMM YYYY') }}</v-card-title>
       <v-list>
         <v-list-item-group>
-          <template v-for="game in gamesByDate[date]">
+          <template v-for="(game, index) in gamesByDate[date]">
             <v-list-item
               :key="game.id"
               :disabled="isTooLateToVote(game.DateOfGame)"
@@ -28,19 +33,40 @@
               <v-list-item-content class="ml-5">
                 <v-list-item-title>
                   <v-row>
-                    <v-col>
+                    <v-col cols="6" class="d-flex justify-start">
+                      <v-tooltip top>
+                        <template #activator="{ on, attrs }">
+                          <v-subheader v-bind="attrs" v-on="on"
+                            >{{ game.Venue.Stadium }},
+                            {{ game.Venue.City }}</v-subheader
+                          >
+                        </template>
+                        <span
+                          >Stadium capacity: {{ game.Venue.Capacity }} /
+                          {{ game.Venue.Country }}
+                        </span>
+                      </v-tooltip>
+                    </v-col>
+                    <v-col cols="6" class="d-flex justify-end">
+                      <v-subheader
+                        >Group {{ game.GroupStage.GroupName }}</v-subheader
+                      >
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col xs="3" sm="3">
+                      {{ game.HomeTeam.TeamName }}
                       <v-list-item-avatar
                         v-if="game.HomeTeam.TeamFlag.url"
-                        tile
                         size="20"
+                        class="ml-3"
                       >
                         <v-img
                           :src="$config.API_URL + game.HomeTeam.TeamFlag.url"
                         ></v-img>
                       </v-list-item-avatar>
-                      {{ game.HomeTeam.TeamName }}
                     </v-col>
-                    <v-col class="d-flex align-center">
+                    <v-col xs="3" sm="3">
                       <v-chip outlined pill class="ml-3">{{
                         getTimeOfGame(
                           game.DateOfGame,
@@ -49,13 +75,10 @@
                         )
                       }}</v-chip>
                     </v-col>
-                    <v-col>
-                      <span class="ml-3">
-                        {{ game.AwayTeam.TeamName }}
-                      </span>
+                    <v-col xs="3" sm="3">
+                      {{ game.AwayTeam.TeamName }}
                       <v-list-item-avatar
                         v-if="game.HomeTeam.TeamFlag.url"
-                        tile
                         class="ml-3"
                         size="20"
                       >
@@ -64,67 +87,74 @@
                         ></v-img>
                       </v-list-item-avatar>
                     </v-col>
+                    <v-col xs="3" sm="3">
+                      <v-chip
+                        v-if="
+                          selectedGame !== game.id &&
+                          typeof game.myPrediction.id === 'undefined'
+                        "
+                        class="ml-3 mr-3"
+                        >Kjósa</v-chip
+                      >
+                      <!-- TODO: Set color after game is finished and show points.  -->
+                      <v-chip
+                        v-if="
+                          selectedGameComp !== game.id &&
+                          typeof game.myPrediction.id !== 'undefined'
+                        "
+                        dark
+                        :color="
+                          getPointsColor(
+                            game.HomeTeamScore,
+                            game.AwayTeamScore,
+                            game.myPrediction.HomeTeamScore,
+                            game.myPrediction.AwayTeamScore
+                          )
+                        "
+                        >Þitt gisk: {{ game.myPrediction.HomeTeamScore }} -
+                        {{ game.myPrediction.AwayTeamScore }}
+                        <small
+                          v-if="
+                            gameIsFinished(
+                              game.HomeTeamScore,
+                              game.AwayTeamScore
+                            )
+                          "
+                          class="ml-1"
+                          >({{
+                            getPoints(
+                              game.HomeTeamScore,
+                              game.AwayTeamScore,
+                              game.myPrediction.HomeTeamScore,
+                              game.myPrediction.AwayTeamScore
+                            )
+                          }}
+                          stig)</small
+                        ></v-chip
+                      >
+                      <v-btn
+                        v-if="selectedGame === game.id"
+                        class="ml-3 mr-3"
+                        small
+                        @click="
+                          vote(
+                            game.myPrediction.HomeTeamScore,
+                            game.myPrediction.AwayTeamScore,
+                            game.id,
+                            game.HomeTeam.TeamName,
+                            game.AwayTeam.TeamName,
+                            game
+                          )
+                        "
+                        >Vista</v-btn
+                      >
+                    </v-col>
                   </v-row>
                 </v-list-item-title>
               </v-list-item-content>
-              <v-list-item-action align-end>
-                <v-chip
-                  v-if="
-                    selectedGame !== game.id &&
-                    typeof game.myPrediction.id === 'undefined'
-                  "
-                  class="ml-3 mr-3"
-                  >Kjósa</v-chip
-                >
-                <!-- TODO: Set color after game is finished and show points.  -->
-                <v-chip
-                  v-if="
-                    selectedGameComp !== game.id &&
-                    typeof game.myPrediction.id !== 'undefined'
-                  "
-                  dark
-                  :color="
-                    getPointsColor(
-                      game.HomeTeamScore,
-                      game.AwayTeamScore,
-                      game.myPrediction.HomeTeamScore,
-                      game.myPrediction.AwayTeamScore
-                    )
-                  "
-                  >Þitt gisk: {{ game.myPrediction.HomeTeamScore }} -
-                  {{ game.myPrediction.AwayTeamScore }}
-                  <span
-                    v-if="
-                      gameIsFinished(game.HomeTeamScore, game.AwayTeamScore)
-                    "
-                    >({{
-                      getPoints(
-                        game.HomeTeamScore,
-                        game.AwayTeamScore,
-                        game.myPrediction.HomeTeamScore,
-                        game.myPrediction.AwayTeamScore
-                      )
-                    }}
-                    pts)</span
-                  ></v-chip
-                >
-                <v-btn
-                  v-if="selectedGame === game.id"
-                  class="ml-3 mr-3"
-                  small
-                  @click="
-                    vote(
-                      game.myPrediction.HomeTeamScore,
-                      game.myPrediction.AwayTeamScore,
-                      game.id,
-                      game.HomeTeam.TeamName,
-                      game.AwayTeam.TeamName,
-                      game
-                    )
-                  "
-                  >Vista</v-btn
-                >
-              </v-list-item-action>
+              <!-- <v-list-item-action align-end>
+                
+              </v-list-item-action> -->
             </v-list-item>
             <v-hover
               v-if="selectedGame === game.id"
@@ -180,6 +210,7 @@
                 </v-row>
               </v-list-item-action-text>
             </v-hover>
+            <v-divider v-if="obj.length - 1 !== index" :key="index"></v-divider>
           </template>
         </v-list-item-group>
       </v-list>
@@ -266,9 +297,6 @@ export default {
       if (pts === 3) {
         return 'green darken-1'
       }
-      if (pts === 4) {
-        return 'green darken-4'
-      }
     },
     getPoints(hts, ats, mhts, mats) {
       let points = 0
@@ -276,6 +304,10 @@ export default {
       if (hts === null || ats === null) {
         return ''
       }
+      hts = parseInt(hts)
+      ats = parseInt(ats)
+      mhts = parseInt(mhts)
+      mats = parseInt(mats)
       const actualResults = this.getWinner1x2(hts, ats)
       const myPredictedResults = this.getWinner1x2(mhts, mats)
       if (actualResults === myPredictedResults) {
@@ -284,7 +316,7 @@ export default {
 
       // Three points for correct score
       if (hts === mhts && ats === mats) {
-        points += 3
+        points += 2
       }
       return points
     },
@@ -306,7 +338,7 @@ export default {
         let diff = now.diff(gameTime, 'minutes')
         if (diff > 90) {
           // diff = `90" (leik lokið)`
-          diff = `${hts} - ${ats} (leik lokið)`
+          diff = `${hts} - ${ats} (lokið)`
         } else {
           diff += '"'
         }

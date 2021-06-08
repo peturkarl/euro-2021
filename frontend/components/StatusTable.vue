@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <v-snackbar
       v-model="snackbar.show"
       multi-line
@@ -15,7 +15,7 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-card class="mx-auto">
+    <v-card class="mx-auto" elevation="3">
       <v-card-title inset>Staðan</v-card-title>
       <v-simple-table>
         <template #default>
@@ -27,16 +27,16 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(member, index) in company.Users" :key="member.id">
+            <tr v-for="(member, index) in statusTableByPoints" :key="member.id">
               <td>{{ index + 1 }}</td>
               <td>{{ member.fullName }}</td>
-              <td>{{ getPoints(member.id) }}</td>
+              <td>{{ member.points }}</td>
             </tr>
           </tbody>
         </template>
       </v-simple-table>
     </v-card>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -89,6 +89,16 @@ export default {
     user() {
       return this.$strapi.user
     },
+    statusTableByPoints() {
+      const users = _.map(this.company.Users, (u) => {
+        return {
+          id: u.id,
+          fullName: u.fullName,
+          points: this.getPoints(u.id),
+        }
+      })
+      return _.orderBy(users, 'points')
+    },
   },
   methods: {
     getPoints(userId) {
@@ -106,9 +116,3 @@ export default {
   },
 }
 </script>
-<style>
-.score-input {
-  width: 20px;
-  padding-top: 25px !important;
-}
-</style>
