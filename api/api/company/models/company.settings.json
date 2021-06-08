@@ -37,6 +37,10 @@
     },
     "RegistrationCode": {
       "type": "string"
+    },
+    "company_messages": {
+      "via": "Company",
+      "collection": "company-message"
     }
   }
 }
