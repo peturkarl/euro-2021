@@ -97,7 +97,7 @@ export default {
           points: this.getPoints(u.id),
         }
       })
-      return _.orderBy(users, 'points')
+      return _.orderBy(users, 'points', 'desc')
     },
   },
   methods: {
@@ -106,6 +106,8 @@ export default {
         const pts = this.statusTable[userId]
         const totalPts = _.sumBy(pts, 'totalPoints')
         return totalPts
+      } else {
+        return 0
       }
     },
     showMsg(msg, color) {
