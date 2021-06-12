@@ -9,7 +9,8 @@ module.exports = {
   async getStatusTable(ctx) {
     const { company } = ctx.params;
     let companyVotes = await strapi.services['user-prediction'].findCompanyVotes({
-      Company: company
+      Company: company,
+      "_limit": 10000,
     });
     let table = {}
 
@@ -46,7 +47,7 @@ module.exports = {
         }
         // Check if score correct
         if (hts === predictedHts && ats === predictedAts) {
-          correctScorePts = 3
+          correctScorePts = 2
         }
       }
       totalPoints += correctResultsPts + correctScorePts
