@@ -15,6 +15,28 @@
         </v-btn>
       </template>
     </v-snackbar>
+    <v-card>
+      <v-card-title>Síur</v-card-title>
+      <v-card-text>
+        <v-chip
+          :color="gameView === 'Knockout' ? 'primary' : 'secondary'"
+          @click="toggleKnockoutView"
+          label
+        >
+          <v-icon left> mdi-trophy </v-icon>
+          Úrslitakeppni
+        </v-chip>
+        <v-chip
+          :color="gameView === 'GroupStage' ? 'primary' : 'secondary'"
+          @click="toggleGroupView"
+          label
+          class="ml-5"
+        >
+          <v-icon left> mdi-blinds </v-icon>
+          Riðlakeppni
+        </v-chip>
+      </v-card-text>
+    </v-card>
     <v-card
       v-for="(obj, date) in gamesByDate"
       :key="date"
@@ -54,7 +76,7 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col xs="3" sm="3">
+                    <v-col xs="3" sm="3" v-if="game.HomeTeam">
                       {{ game.HomeTeam.TeamName }}
                       <v-list-item-avatar
                         v-if="game.HomeTeam.TeamFlag.url"
@@ -66,6 +88,7 @@
                         ></v-img>
                       </v-list-item-avatar>
                     </v-col>
+                    <v-col xs="3" sm="3" v-if="!game.HomeTeam">TBD</v-col>
                     <v-col xs="3" sm="3">
                       <v-chip outlined pill class="ml-3">{{
                         getTimeOfGame(
@@ -75,7 +98,7 @@
                         )
                       }}</v-chip>
                     </v-col>
-                    <v-col xs="3" sm="3">
+                    <v-col xs="3" sm="3" v-if="game.AwayTeam">
                       {{ game.AwayTeam.TeamName }}
                       <v-list-item-avatar
                         v-if="game.HomeTeam.TeamFlag.url"
@@ -87,7 +110,8 @@
                         ></v-img>
                       </v-list-item-avatar>
                     </v-col>
-                    <v-col xs="3" sm="3">
+                    <v-col xs="3" sm="3" v-if="!game.AwayTeam">TBD</v-col>
+                    <v-col xs="3" sm="3" v-if="game.HomeTeam">
                       <v-chip
                         v-if="
                           selectedGame !== game.id &&
@@ -161,7 +185,10 @@
               :key="game.id + '-show'"
               disabled
             >
-              <v-list-item-action-text class="d-flex justify-center mt-5">
+              <v-list-item-action-text
+                v-if="game.HomeTeam"
+                class="d-flex justify-center mt-5"
+              >
                 <v-row>
                   <v-col>
                     <v-text-field
@@ -238,6 +265,7 @@ export default {
         show: false,
         color: '',
       },
+      gameView: 'Knockout',
       games: [],
       myPredictions: [],
       selectedGame: -1,
@@ -267,7 +295,10 @@ export default {
   },
   computed: {
     gamesByDate() {
-      const g = _.groupBy(this.games, (game) => {
+      const filteredGames = _.filter(this.games, (game) => {
+        return game.GroupStage.GroupType === this.gameView
+      })
+      const g = _.groupBy(filteredGames, (game) => {
         return moment(game.DateOfGame).format('DD-MM-YYYY')
       })
       return g
@@ -280,6 +311,12 @@ export default {
     },
   },
   methods: {
+    toggleKnockoutView() {
+      this.gameView = 'Knockout'
+    },
+    toggleGroupView() {
+      this.gameView = 'GroupStage'
+    },
     gameIsFinished(hts, ats) {
       return hts !== null && ats !== null
     },
