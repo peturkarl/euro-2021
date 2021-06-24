@@ -19,9 +19,18 @@
       <v-card-title>Síur</v-card-title>
       <v-card-text>
         <v-chip
+          :color="gameView === 'All' ? 'primary' : 'secondary'"
+          @click="toggleAllView"
+          label
+        >
+          <v-icon left> mdi-table </v-icon>
+          Allir leikir
+        </v-chip>
+        <v-chip
           :color="gameView === 'Knockout' ? 'primary' : 'secondary'"
           @click="toggleKnockoutView"
           label
+          class="ml-5"
         >
           <v-icon left> mdi-trophy </v-icon>
           Úrslitakeppni
@@ -295,9 +304,15 @@ export default {
   },
   computed: {
     gamesByDate() {
-      const filteredGames = _.filter(this.games, (game) => {
-        return game.GroupStage.GroupType === this.gameView
-      })
+      let filteredGames = []
+      if (this.gameView === 'All') {
+        filteredGames = this.games
+      } else {
+        filteredGames = _.filter(this.games, (game) => {
+          return game.GroupStage.GroupType === this.gameView
+        })
+      }
+
       const g = _.groupBy(filteredGames, (game) => {
         return moment(game.DateOfGame).format('DD-MM-YYYY')
       })
@@ -311,6 +326,9 @@ export default {
     },
   },
   methods: {
+    toggleAllView() {
+      this.gameView = 'All'
+    },
     toggleKnockoutView() {
       this.gameView = 'Knockout'
     },
