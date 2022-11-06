@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "company_messages",
+  "info": {
+    "name": "CompanyMessage",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Title": {
+      "type": "string"
+    },
+    "Content": {
+      "type": "richtext"
+    },
+    "Company": {
+      "model": "company",
+      "via": "company_messages"
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/user-predictions",
+      "handler": "user-prediction.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/user-predictions/count",
+      "handler": "user-prediction.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/user-predictions/:id",
+      "handler": "user-prediction.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/user-predictions",
+      "handler": "user-prediction.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/user-predictions/:id",
+      "handler": "user-prediction.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/user-predictions/:id",
+      "handler": "user-prediction.delete",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/company-status-table/:company",
+      "handler": "user-prediction.getStatusTable",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

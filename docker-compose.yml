@@ -1,0 +1,68 @@
+version: "3"
+
+services:
+  euro2021_web:
+    image: nodejs
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
+    container_name: euro2021_web
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_CLIENT: ${DATABASE_CLIENT}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      AWS_ACCES_KEY_ID: ${AWS_ACCES_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+      EMAIL_DEFAULT_FROM: ${EMAIL_DEFAULT_FROM}
+      EMAIL_DEFAULT_REPLY_TO: ${EMAIL_DEFAULT_REPLY_TO}
+    networks:
+      - strapi-app-network
+    volumes:
+      - ./api:/srv/app
+    ports:
+      - "3070:3070"
+
+  euro2021_pg_db:
+    image: postgres
+    container_name: euro2021_pg_db
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    networks:
+      - strapi-app-network
+    volumes:
+      - euro2021_pg_data:/data/postgres
+    ports:
+      - "5439:5439"
+
+  frontend:
+    image: node:14
+    build: ./frontend/
+    command:
+      "npm run start"
+    volumes:
+      - ./frontend:/usr/src/app
+    working_dir: /usr/src/app
+    ports:
+      - "3068:3068"
+    networks:
+      - strapi-app-network
+    environment:
+      HOST: 0.0.0.0
+
+networks:
+  strapi-app-network:
+    driver: bridge
+
+volumes:
+  euro2021_pg_data:

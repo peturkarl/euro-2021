@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "companies",
+  "info": {
+    "name": "Company",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "CompanyName": {
+      "type": "string"
+    },
+    "Logo": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false,
+      "pluginOptions": {}
+    },
+    "Users": {
+      "via": "company",
+      "plugin": "users-permissions",
+      "collection": "user"
+    },
+    "VotingRule": {
+      "model": "voting-rules"
+    },
+    "RegistrationCode": {
+      "type": "string"
+    },
+    "company_messages": {
+      "via": "Company",
+      "collection": "company-message"
+    }
+  }
+}

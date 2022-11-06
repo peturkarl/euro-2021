@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "games",
+  "info": {
+    "name": "Game",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "HomeTeamScore": {
+      "type": "integer",
+      "default": 0,
+      "required": false,
+      "unique": false,
+      "min": 0,
+      "max": 100
+    },
+    "AwayTeamScore": {
+      "type": "integer",
+      "default": 0,
+      "max": 100,
+      "min": 0
+    },
+    "DateOfGame": {
+      "type": "datetime"
+    },
+    "HomeTeam": {
+      "model": "team",
+      "via": "HomeGames"
+    },
+    "AwayTeam": {
+      "model": "team",
+      "via": "AwayGames"
+    },
+    "GroupStage": {
+      "via": "games",
+      "model": "group"
+    },
+    "Venue": {
+      "model": "venue"
+    }
+  }
+}
