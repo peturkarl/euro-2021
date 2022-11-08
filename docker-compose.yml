@@ -1,12 +1,12 @@
 version: "3"
 
 services:
-  hm2022_web:
-    image: nodejs
+  hm2022_api:
+    image: node:14
     build:
       context: .
       dockerfile: ./api/Dockerfile
-    container_name: hm2022_web
+    container_name: hm2022_api
     restart: unless-stopped
     env_file: .env
     environment:
@@ -43,21 +43,6 @@ services:
       - hm2022_pg_data:/data/postgres
     ports:
       - "5439:5439"
-
-  frontend:
-    image: node:14
-    build: ./frontend/
-    command:
-      "npm run start"
-    volumes:
-      - ./frontend:/usr/src/app
-    working_dir: /usr/src/app
-    ports:
-      - "3068:3068"
-    networks:
-      - strapi-app-network
-    environment:
-      HOST: 0.0.0.0
 
 networks:
   strapi-app-network:
