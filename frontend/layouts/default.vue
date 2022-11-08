@@ -28,7 +28,7 @@
           height="35"
         />
       </span>
-      <!-- <v-toolbar-title v-text="getTitle" /> -->
+      <v-toolbar-title v-text="getTitle" />
       <v-spacer />
 
       <div v-if="user">
@@ -121,7 +121,7 @@ export default {
       return this.$strapi.user
     },
     getTitle() {
-      return `${this.company.CompanyName} ${this.title}`
+      return `${this.title}`
     },
     getCompanyLogo() {
       if (this.company.Logo === null) {
