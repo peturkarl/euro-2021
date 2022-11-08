@@ -1,12 +1,12 @@
 version: "3"
 
 services:
-  euro2021_web:
+  hm2022_web:
     image: nodejs
     build:
       context: .
       dockerfile: ./api/Dockerfile
-    container_name: euro2021_web
+    container_name: hm2022_web
     restart: unless-stopped
     env_file: .env
     environment:
@@ -28,9 +28,9 @@ services:
     ports:
       - "3070:3070"
 
-  euro2021_pg_db:
+  hm2022_pg_db:
     image: postgres
-    container_name: euro2021_pg_db
+    container_name: hm2022_pg_db
     restart: unless-stopped
     env_file: .env
     environment:
@@ -40,7 +40,7 @@ services:
     networks:
       - strapi-app-network
     volumes:
-      - euro2021_pg_data:/data/postgres
+      - hm2022_pg_data:/data/postgres
     ports:
       - "5439:5439"
 
@@ -64,4 +64,4 @@ networks:
     driver: bridge
 
 volumes:
-  euro2021_pg_data:
+  hm2022_pg_data:
