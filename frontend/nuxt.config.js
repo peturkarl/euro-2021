@@ -1,9 +1,8 @@
-import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - EURO2021',
-    title: 'EURO2021',
+    titleTemplate: '%s - HM Katar 2022',
+    title: 'HM Katar 2022',
     htmlAttrs: {
       lang: 'en',
     },

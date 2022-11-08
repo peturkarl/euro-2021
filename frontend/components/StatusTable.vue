@@ -18,25 +18,21 @@
     <v-card class="mx-auto" elevation="3">
       <v-card-title inset>Staðan</v-card-title>
       <v-card-text>
-        <v-chip
-          :color="gameView === 'All' ? 'primary' : 'secondary'"
-          label
-          @click="toggleAllView"
-        >
+        <v-chip :outlined="gameView !== 'All'" label @click="toggleAllView">
           <v-icon left> mdi-table </v-icon>
           Allir leikir
         </v-chip>
         <v-chip
-          :color="gameView === 'Knockout' ? 'primary' : 'secondary'"
           label
+          :outlined="gameView !== 'Knockout'"
           @click="toggleKnockoutView"
         >
           <v-icon left> mdi-trophy </v-icon>
           Úrslitakeppni
         </v-chip>
         <v-chip
-          :color="gameView === 'GroupStage' ? 'primary' : 'secondary'"
           label
+          :outlined="gameView !== 'GroupStage'"
           @click="toggleGroupView"
         >
           <v-icon left> mdi-blinds </v-icon>
@@ -58,7 +54,7 @@
               <td>{{ member.fullName }}</td>
               <td>
                 <v-tooltip top>
-                  <template v-slot:activator="{ on, attrs }">
+                  <template #activator="{ on, attrs }">
                     <span v-bind="attrs" v-on="on">
                       {{ member.points }}
                     </span>
@@ -97,7 +93,7 @@ export default {
         color: '',
       },
       gameMap: {},
-      gameView: 'Knockout',
+      gameView: 'All',
       company: [],
       statusTable: [],
     }

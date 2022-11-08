@@ -4,7 +4,7 @@
       <v-col xl="6" lg="6" md="6" sm="12" xs="12">
         <v-toolbar color="blue">
           <v-toolbar-title v-if="companyName" class="white--text">
-            EM 2021 keppnin hjá <strong>{{ companyName }}</strong>
+            HM 2022 keppnin hjá <strong>{{ companyName }}</strong>
           </v-toolbar-title>
         </v-toolbar>
         <v-card>

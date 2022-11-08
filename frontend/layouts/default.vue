@@ -104,7 +104,7 @@ export default {
       miniVariant: false,
       right: false,
       rightDrawer: false,
-      title: 'EURO 2021',
+      title: 'HM 2022',
     }
   },
   async fetch() {

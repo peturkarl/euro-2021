@@ -4,7 +4,7 @@
       <v-col xl="6" lg="6" md="6" sm="12" xs="12">
         <v-toolbar color="pink">
           <v-toolbar-title class="white--text">
-            UEFA Euro 2021 - National Teams
+            HM í Katar 2022
           </v-toolbar-title>
         </v-toolbar>
         <v-card>

@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <v-snackbar
       v-model="snackbar.show"
       multi-line
@@ -15,31 +15,27 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-card>
-      <v-card-title>Síur</v-card-title>
+    <v-card class="mx-auto" elevation="3">
+      <v-card-title inset>Síur</v-card-title>
       <v-card-text>
-        <v-chip
-          :color="gameView === 'All' ? 'primary' : 'secondary'"
-          @click="toggleAllView"
-          label
-        >
+        <v-chip label :outlined="gameView !== 'All'" @click="toggleAllView">
           <v-icon left> mdi-table </v-icon>
           Allir leikir
         </v-chip>
         <v-chip
-          :color="gameView === 'Knockout' ? 'primary' : 'secondary'"
-          @click="toggleKnockoutView"
           label
+          :outlined="gameView !== 'Knockout'"
           class="ml-5"
+          @click="toggleKnockoutView"
         >
           <v-icon left> mdi-trophy </v-icon>
           Úrslitakeppni
         </v-chip>
         <v-chip
-          :color="gameView === 'GroupStage' ? 'primary' : 'secondary'"
-          @click="toggleGroupView"
           label
+          :outlined="gameView !== 'GroupStage'"
           class="ml-5"
+          @click="toggleGroupView"
         >
           <v-icon left> mdi-blinds </v-icon>
           Riðlakeppni
@@ -85,7 +81,7 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col xs="3" sm="3" v-if="game.HomeTeam">
+                    <v-col v-if="game.HomeTeam" xs="3" sm="3">
                       {{ game.HomeTeam.TeamName }}
                       <v-list-item-avatar
                         v-if="game.HomeTeam.TeamFlag.url"
@@ -97,7 +93,7 @@
                         ></v-img>
                       </v-list-item-avatar>
                     </v-col>
-                    <v-col xs="3" sm="3" v-if="!game.HomeTeam">TBD</v-col>
+                    <v-col v-if="!game.HomeTeam" xs="3" sm="3">TBD</v-col>
                     <v-col xs="3" sm="3">
                       <v-chip outlined pill class="ml-3">{{
                         getTimeOfGame(
@@ -107,7 +103,7 @@
                         )
                       }}</v-chip>
                     </v-col>
-                    <v-col xs="3" sm="3" v-if="game.AwayTeam">
+                    <v-col v-if="game.AwayTeam" xs="3" sm="3">
                       {{ game.AwayTeam.TeamName }}
                       <v-list-item-avatar
                         v-if="game.HomeTeam.TeamFlag.url"
@@ -119,8 +115,8 @@
                         ></v-img>
                       </v-list-item-avatar>
                     </v-col>
-                    <v-col xs="3" sm="3" v-if="!game.AwayTeam">TBD</v-col>
-                    <v-col xs="3" sm="3" v-if="game.HomeTeam">
+                    <v-col v-if="!game.AwayTeam" xs="3" sm="3">TBD</v-col>
+                    <v-col v-if="game.HomeTeam" xs="3" sm="3">
                       <v-chip
                         v-if="
                           selectedGame !== game.id &&
@@ -251,7 +247,7 @@
         </v-list-item-group>
       </v-list>
     </v-card>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -274,7 +270,7 @@ export default {
         show: false,
         color: '',
       },
-      gameView: 'Knockout',
+      gameView: 'All',
       games: [],
       myPredictions: [],
       selectedGame: -1,
