@@ -4,14 +4,12 @@
       <Games></Games>
     </v-col>
     <v-col xl="4" xs="12" sm="12" md="4">
-      <v-row class="mt-4">
-        <v-col cols="12">
-          <CompanyMessages></CompanyMessages>
-        </v-col>
-        <v-col cols="12">
-          <StatusTable></StatusTable>
-        </v-col>
-      </v-row>
+      <v-col cols="12">
+        <CompanyMessages></CompanyMessages>
+      </v-col>
+      <v-col cols="12">
+        <StatusTable></StatusTable>
+      </v-col>
     </v-col>
   </v-row>
 </template>

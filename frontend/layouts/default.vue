@@ -1,12 +1,6 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
+    <v-navigation-drawer v-model="drawer" fixed app>
       <v-list>
         <v-list-item
           v-for="(item, i) in items"
@@ -34,7 +28,7 @@
           height="35"
         />
       </span>
-      <v-toolbar-title v-text="getTitle" />
+      <!-- <v-toolbar-title v-text="getTitle" /> -->
       <v-spacer />
 
       <div v-if="user">

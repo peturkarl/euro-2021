@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <v-snackbar
       v-model="snackbar.show"
       multi-line
@@ -25,7 +25,6 @@
         <v-chip
           label
           :outlined="gameView !== 'Knockout'"
-          class="ml-5"
           @click="toggleKnockoutView"
         >
           <v-icon left> mdi-trophy </v-icon>
@@ -34,7 +33,6 @@
         <v-chip
           label
           :outlined="gameView !== 'GroupStage'"
-          class="ml-5"
           @click="toggleGroupView"
         >
           <v-icon left> mdi-blinds </v-icon>
@@ -247,7 +245,7 @@
         </v-list-item-group>
       </v-list>
     </v-card>
-  </div>
+  </v-container>
 </template>
 
 <script>
